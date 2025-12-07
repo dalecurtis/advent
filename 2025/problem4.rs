@@ -83,7 +83,7 @@ fn main() {
     print_maze(&maze);
 
     let mut part1_count = 0;
-    for tp in tp_locations {
+    for tp in tp_locations.clone() {
         let s = successors(&tp, '@', &maze);
         if s.len() < 4 {
             part1_count += 1;
@@ -91,4 +91,24 @@ fn main() {
     }
 
     println!("part1 count: {}", part1_count);
+
+    let mut part2_count = 0;
+    loop {
+        let old_len = tp_locations.len();
+        tp_locations.retain(|p| {
+            let s = successors(&p, '@', &maze);
+            if s.len() < 4 {
+                part2_count += 1;
+                maze[p.y][p.x] = '.';
+                return false;
+            }
+            return true;
+        });
+
+        if tp_locations.len() == old_len {
+            break;
+        }
+    }
+    println!("part2 count: {}", part2_count);
+
 }
