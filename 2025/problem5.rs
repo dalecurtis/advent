@@ -76,5 +76,11 @@ fn main() {
         }
     }
 
+    let mut total_fresh_count = 0;
+    for r in &ranges {
+        total_fresh_count += r.1 - r.0 + 1;
+    }
+
     println!("Fresh count: {}", fresh_count);
+    println!("Total fresh count: {}", total_fresh_count);
 }
