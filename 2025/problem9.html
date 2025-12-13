@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plotted Coordinates with Area Calculation</title>
+    <style>
+        /* Basic styling for the canvas */
+        #plotCanvas {
+            border: 1px solid black;
+            background-color: #f4f4f4;
+            display: block;
+            margin: 20px auto; /* Center the canvas on the page */
+            cursor: pointer; /* Indicate it's clickable */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #infoDisplay {
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Coordinate Plot (Area Calculation)</h1>
+    <p>The points are plotted from the data file, scaled by a factor of 100.</p>
+    <p>
+        **Click two points** to calculate the area using the formula:
+        $$(|A_y - B_y| + 1) \times (|A_x - B_x| + 1)$$
+    </p>
+
+    <canvas id="plotCanvas" width="1000" height="1000"></canvas>
+
+    <div id="infoDisplay">Click the first point...</div>
+
+    <script>
+        // Data from the input file
+        const data = `98154,50433
+98154,51659
+98318,51659
+98318,52839
+97531,52839
+97531,54072
+97795,54072
+97795,55273
+97599,55273
+97599,56438
+97163,56438
+97163,57630
+96985,57630
+96985,58862
+97008,58862
+97008,60001
+96540,60001
+96540,61238
+96525,61238
+96525,62389
+96136,62389
+96136,63729
+96399,63729
+96399,64863
+95924,64863
+95924,66096
+95742,66096
+95742,67229
+95265,67229
+95265,68026
+93975,68026
+93975,69483
+94298,69483
+94298,70437
+93447,70437
+93447,71702
+93255,71702
+93255,72471
+92092,72471
+92092,73807
+91997,73807
+91997,74541
+90844,74541
+90844,75747
+90491,75747
+90491,76890
+90014,76890
+90014,77857
+89265,77857
+89265,78572
+88186,78572
+88186,79561
+87489,79561
+87489,80961
+87282,80961
+87282,81285
+85786,81285
+85786,82279
+85089,82279
+85089,83598
+84715,83598
+84715,84056
+83449,84056
+83449,85206
+82869,85206
+82869,85762
+81730,85762
+81730,86992
+81183,86992
+81183,87726
+80201,87726
+80201,88040
+78902,88040
+78902,89210
+78253,89210
+78253,89823
+77189,89823
+77189,90009
+75855,90009
+75855,90815
+74933,90815
+74933,91606
+73991,91606
+73991,92411
+73044,92411
+73044,92934
+71938,92934
+71938,93433
+70822,93433
+70822,93648
+69581,93648
+69581,94314
+68546,94314
+68546,95024
+67517,95024
+67517,94716
+66105,94716
+66105,95285
+65025,95285
+65025,96388
+64097,96388
+64097,96208
+62773,96208
+62773,96508
+61596,96508
+61596,96717
+60399,96717
+60399,96734
+59166,96734
+59166,97217
+58025,97217
+58025,97725
+56872,97725
+56872,97536
+55620,97536
+55620,97385
+54388,97385
+54388,97698
+53201,97698
+53201,97956
+51999,97956
+51999,98476
+50792,98476
+50792,97657
+49571,97657
+49571,97890
+48355,97890
+48355,98145
+47124,98145
+47124,98316
+45883,98316
+45883,97952
+44687,97952
+44687,97958
+43453,97958
+43453,97033
+42361,97033
+42361,96816
+41173,96816
+41173,97033
+39892,97033
+39892,96956
+38657,96956
+38657,96441
+37528,96441
+37528,96130
+36350,96130
+36350,95671
+35217,95671
+35217,95273
+34069,95273
+34069,95070
+32845,95070
+32845,94644
+31699,94644
+31699,93613
+30817,93613
+30817,93489
+29542,93489
+29542,93176
+28337,93176
+28337,92481
+27321,92481
+27321,91694
+26364,91694
+26364,90870
+25443,90870
+25443,90230
+24418,90230
+24418,89472
+23473,89472
+23473,88942
+22372,88942
+22372,88622
+21100,88622
+21100,87565
+20378,87565
+20378,86615
+19591,86615
+19591,86172
+18377,86172
+18377,85663
+17192,85663
+17192,84787
+16331,84787
+16331,83324
+16070,83324
+16070,82800
+14866,82800
+14866,82182
+13727,82182
+13727,80646
+13644,80646
+13644,80193
+12282,80193
+12282,79304
+11429,79304
+11429,78018
+11116,78018
+11116,77212
+10142,77212
+10142,75913
+9901,75913
+9901,74888
+9258,74888
+9258,74205
+8022,74205
+8022,73085
+7511,73085
+7511,71792
+7349,71792
+7349,70816
+6580,70816
+6580,69681
+6128,69681
+6128,68714
+5284,68714
+5284,67466
+5106,67466
+5106,66359
+4578,66359
+4578,65036
+4680,65036
+4680,63974
+4016,63974
+4016,62754
+3859,62754
+3859,61611
+3430,61611
+3430,60462
+2997,60462
+2997,59180
+3198,59180
+3198,57968
+3115,57968
+3115,56786
+2871,56786
+2871,55659
+2129,55659
+2129,54386
+2631,54386
+2631,53203
+2260,53203
+2260,51991
+2244,51991
+2244,50781
+2169,50781
+2169,50401
+94699,50401
+94699,48346
+1840,48346
+1840,47122
+1834,47122
+1834,45904
+1930,45904
+1930,44738
+2511,44738
+2511,43572
+2915,43572
+2915,42343
+2857,42343
+2857,41166
+3146,41166
+3146,39955
+3257,39955
+3257,38776
+3536,38776
+3536,37554
+3652,37554
+3652,36292
+3674,36292
+3674,35141
+4091,35141
+4091,33976
+4464,33976
+4464,32898
+5069,32898
+5069,31972
+6021,31972
+6021,30493
+5649,30493
+5649,29455
+6326,29455
+6326,28642
+7432,28642
+7432,27428
+7720,27428
+7720,26421
+8405,26421
+8405,25199
+8722,25199
+8722,24020
+9143,24020
+9143,23327
+10310,23327
+10310,21943
+10453,21943
+10453,21244
+11568,21244
+11568,20019
+11979,20019
+11979,19219
+12936,19219
+12936,18221
+13648,18221
+13648,17813
+15012,17813
+15012,16324
+15205,16324
+15205,16070
+16674,16070
+16674,14784
+17123,14784
+17123,14187
+18224,14187
+18224,13164
+18948,13164
+18948,12901
+20301,12901
+20301,12140
+21235,12140
+21235,10741
+21711,10741
+21711,10344
+22925,10344
+22925,10007
+24155,10007
+24155,9447
+25226,9447
+25226,8483
+26060,8483
+26060,8154
+27263,8154
+27263,7684
+28378,7684
+28378,6350
+29073,6350
+29073,6326
+30407,6326
+30407,6127
+31638,6127
+31638,4808
+32417,4808
+32417,5034
+33804,5034
+33804,4750
+34986,4750
+34986,4343
+36124,4343
+36124,3377
+37112,3377
+37112,3398
+38380,3398
+38380,3461
+39640,3461
+39640,3182
+40816,3182
+40816,2907
+41995,2907
+41995,2161
+43111,2161
+43111,2019
+44327,2019
+44327,2137
+45567,2137
+45567,2347
+46801,2347
+46801,2084
+48001,2084
+48001,1828
+49212,1828
+49212,2439
+50427,2439
+50427,2250
+51639,2250
+51639,2565
+52833,2565
+52833,2148
+54077,2148
+54077,2164
+55299,2164
+55299,2738
+56451,2738
+56451,2802
+57665,2802
+57665,3238
+58815,3238
+58815,2830
+60136,2830
+60136,3636
+61199,3636
+61199,3429
+62505,3429
+62505,3635
+63718,3635
+63718,4523
+64718,4523
+64718,5061
+65813,5061
+65813,5459
+66953,5459
+66953,5293
+68325,5293
+68325,6415
+69169,6415
+69169,6668
+70383,6668
+70383,6681
+71733,6681
+71733,7882
+72484,7882
+72484,7927
+73849,7927
+73849,8994
+74637,8994
+74637,9180
+75955,9180
+75955,10353
+76643,10353
+76643,10757
+77840,10757
+77840,11923
+78490,11923
+78490,12448
+79611,12448
+79611,13185
+80573,13185
+80573,13529
+81882,13529
+81882,14572
+82591,14572
+82591,15742
+83155,15742
+83155,16606
+83999,16606
+83999,17071
+85270,17071
+85270,18173
+85870,18173
+85870,19222
+86510,19222
+86510,20214
+87207,20214
+87207,21071
+88074,21071
+88074,22170
+88622,22170
+88622,22934
+89641,22934
+89641,23738
+90637,23738
+90637,24863
+91147,24863
+91147,25941
+91723,25941
+91723,26996
+92336,26996
+92336,28213
+92638,28213
+92638,29042
+93713,29042
+93713,30301
+93909,30301
+93909,31451
+94317,31451
+94317,32685
+94502,32685
+94502,33573
+95609,33573
+95609,34821
+95747,34821
+95747,36122
+95663,36122
+95663,37280
+96014,37280
+96014,38330
+96801,38330
+96801,39562
+96891,39562
+96891,40803
+96883,40803
+96883,42002
+97055,42002
+97055,43148
+97578,43148
+97578,44409
+97285,44409
+97285,45554
+97999,45554
+97999,46811
+97513,46811
+97513,48015
+97582,48015
+97582,49215
+98001,49215
+98001,50433`;
+
+        let PLOTTED_POINTS = [];
+        let minX_scaled, minY_scaled, maxY_scaled, width, height;
+        const SCALE_FACTOR = 100;
+        const MARGIN = 10;
+        let canvas, ctx;
+        let infoDisplay;
+
+        // Variables for click tracking
+        let selectedPointA = null;
+        let selectedPointB = null;
+
+        /**
+         * Calculates the area based on the formula: (|Ay - By| + 1) * (|Ax - Bx| + 1)
+         * @param {object} a - Point A with origX and origY
+         * @param {object} b - Point B with origX and origY
+         * @returns {number} - Calculated area.
+         */
+        function calculateArea(a, b) {
+            const deltaX = Math.abs(a.origX - b.origX) + 1;
+            const deltaY = Math.abs(a.origY - b.origY) + 1;
+            return deltaX * deltaY;
+        }
+
+        /**
+         * Parses the data, calculates scaled and plot-ready coordinates, and stores them.
+         */
+        function calculateAndStorePoints() {
+            const rawCoordinates = data.trim().split('\n').map(line => {
+                const parts = line.split(',');
+                return {
+                    origX: parseFloat(parts[0]),
+                    origY: parseFloat(parts[1]),
+                    scaledX: parseFloat(parts[0]) / SCALE_FACTOR,
+                    scaledY: parseFloat(parts[1]) / SCALE_FACTOR
+                };
+            });
+
+            minX_scaled = Math.min(...rawCoordinates.map(p => p.scaledX));
+            minY_scaled = Math.min(...rawCoordinates.map(p => p.scaledY));
+            maxY_scaled = Math.max(...rawCoordinates.map(p => p.scaledY));
+
+            width = Math.max(...rawCoordinates.map(p => p.scaledX)) - minX_scaled;
+            height = maxY_scaled - minY_scaled;
+
+            PLOTTED_POINTS = rawCoordinates.map(coord => {
+                return {
+                    origX: coord.origX,
+                    origY: coord.origY,
+                    plotX: coord.scaledX - minX_scaled,
+                    plotY: (maxY_scaled - minY_scaled) - (coord.scaledY - minY_scaled)
+                };
+            });
+        }
+
+        /**
+         * Draws the entire plot and highlights selected/hovered points.
+         * @param {object | null} hoveredPoint - The point object to highlight on hover.
+         */
+        function plotData(hoveredPoint) {
+            // Adjust canvas size to fit the plot perfectly with a margin and extra space for text
+            canvas.width = Math.ceil(width) + 2 * MARGIN;
+            canvas.height = Math.ceil(height) + 2 * MARGIN + 20;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            ctx.translate(MARGIN, MARGIN);
+
+            // 1. Draw connecting lines
+            ctx.beginPath();
+            ctx.strokeStyle = '#007bff';
+            ctx.lineWidth = 1;
+            PLOTTED_POINTS.forEach((point, index) => {
+                if (index === 0) {
+                    ctx.moveTo(point.plotX, point.plotY);
+                } else {
+                    ctx.lineTo(point.plotX, point.plotY);
+                }
+            });
+            ctx.stroke();
+
+            // 2. Draw closing line
+            if (PLOTTED_POINTS.length > 0) {
+                const firstPoint = PLOTTED_POINTS[0];
+                const lastPoint = PLOTTED_POINTS[PLOTTED_POINTS.length - 1];
+                ctx.beginPath();
+                ctx.strokeStyle = 'green';
+                ctx.lineWidth = 1;
+                ctx.moveTo(lastPoint.plotX, lastPoint.plotY);
+                ctx.lineTo(firstPoint.plotX, firstPoint.plotY);
+                ctx.stroke();
+            }
+
+            // 3. Draw all points (default red)
+            PLOTTED_POINTS.forEach(point => {
+                ctx.fillStyle = 'red';
+                let radius = 1.5;
+
+                // 4. Highlight selected points
+                if (selectedPointA && point.origX === selectedPointA.origX && point.origY === selectedPointA.origY) {
+                    ctx.fillStyle = 'green'; // Point A color
+                    radius = 4;
+                } else if (selectedPointB && point.origX === selectedPointB.origX && point.origY === selectedPointB.origY) {
+                    ctx.fillStyle = 'orange'; // Point B color
+                    radius = 4;
+                }
+
+                ctx.beginPath();
+                ctx.arc(point.plotX, point.plotY, radius, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+
+            // 5. Draw crosshair gridlines for hovered point
+            if (hoveredPoint && (!selectedPointA || (selectedPointA && !selectedPointB))) {
+                // Only show hover effect if less than two points are selected
+
+                // Draw crosshair gridlines
+                ctx.strokeStyle = '#0000ff'; // Blue color for crosshair
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]); // Dashed line
+
+                // Vertical line (Top to Bottom: from 0 to height)
+                ctx.beginPath();
+                ctx.moveTo(hoveredPoint.plotX, 0);
+                ctx.lineTo(hoveredPoint.plotX, height);
+                ctx.stroke();
+
+                // Horizontal line (Left to Right: from 0 to width)
+                ctx.beginPath();
+                ctx.moveTo(0, hoveredPoint.plotY);
+                ctx.lineTo(width, hoveredPoint.plotY);
+                ctx.stroke();
+
+                ctx.setLineDash([]); // Reset line style
+
+                // Highlight the point at the crosshair center (bigger blue circle)
+                ctx.fillStyle = 'darkblue';
+                ctx.beginPath();
+                ctx.arc(hoveredPoint.plotX, hoveredPoint.plotY, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            // 6. Draw bounding box for context
+            ctx.strokeStyle = 'gray';
+            ctx.lineWidth = 0.5;
+            ctx.strokeRect(0, 0, width, height);
+
+            ctx.restore();
+
+            // 7. Draw coordinate text for hovered point (below the plot area)
+            if (hoveredPoint && (!selectedPointA || (selectedPointA && !selectedPointB))) {
+                ctx.fillStyle = 'black';
+                ctx.font = '14px Arial';
+                const coordText = `Hover: (${hoveredPoint.origX}, ${hoveredPoint.origY})`;
+                ctx.fillText(coordText, MARGIN, canvas.height - 5);
+            }
+        }
+
+        /**
+         * Gets the mouse position relative to the canvas element.
+         * @param {MouseEvent} evt - The mouse event.
+         * @returns {object} - Object with x and y coordinates.
+         */
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        /**
+         * Finds the point nearest to the given canvas coordinates.
+         * @param {number} x - Canvas X coordinate (adjusted for margin).
+         * @param {number} y - Canvas Y coordinate (adjusted for margin).
+         * @returns {object | null} - The closest point object or null.
+         */
+        function getClosestPoint(x, y) {
+            let closestPoint = null;
+            let minDistanceSq = Infinity;
+            const hitRadiusSq = 5 * 5; // 5 pixels tolerance squared
+
+            for (const point of PLOTTED_POINTS) {
+                const dx = point.plotX - x;
+                const dy = point.plotY - y;
+                const distanceSq = dx * dx + dy * dy;
+
+                if (distanceSq < hitRadiusSq && distanceSq < minDistanceSq) {
+                    minDistanceSq = distanceSq;
+                    closestPoint = point;
+                }
+            }
+            return closestPoint;
+        }
+
+        /**
+         * Handles the mouse move event for hit testing and redrawing.
+         */
+        function handleMouseMove(evt) {
+            if (selectedPointA && selectedPointB) return; // Don't show hover if calculation is pending
+
+            const mousePos = getMousePos(evt);
+            const hitTestX = mousePos.x - MARGIN;
+            const hitTestY = mousePos.y - MARGIN;
+
+            const hoveredPoint = getClosestPoint(hitTestX, hitTestY);
+
+            // Redraw the plot with or without the hovered point highlighted
+            plotData(hoveredPoint);
+        }
+
+        /**
+         * Handles the mouse click event for selecting points.
+         */
+        function handleClick(evt) {
+            const mousePos = getMousePos(evt);
+            const hitTestX = mousePos.x - MARGIN;
+            const hitTestY = mousePos.y - MARGIN;
+
+            const clickedPoint = getClosestPoint(hitTestX, hitTestY);
+
+            if (!clickedPoint) return;
+
+            if (!selectedPointA) {
+                // Select first point (A)
+                selectedPointA = clickedPoint;
+                infoDisplay.innerHTML = `Point A selected: (${clickedPoint.origX}, ${clickedPoint.origY}). Click the second point...`;
+            } else if (!selectedPointB) {
+                // Select second point (B)
+                selectedPointB = clickedPoint;
+
+                if (selectedPointA.origX === selectedPointB.origX && selectedPointA.origY === selectedPointB.origY) {
+                    infoDisplay.innerHTML = `Error: You clicked the same point twice. Please click a different point for B.`;
+                    selectedPointB = null; // Reset B
+                } else {
+                    const area = calculateArea(selectedPointA, selectedPointB);
+                    infoDisplay.innerHTML = `
+                        **Area Calculation Complete!**<br>
+                        A: (${selectedPointA.origX}, ${selectedPointA.origY})<br>
+                        B: (${selectedPointB.origX}, ${selectedPointB.origY})<br>
+                        Formula: ${Math.abs(selectedPointA.origY - selectedPointB.origY) + 1} &times; ${Math.abs(selectedPointA.origX - selectedPointB.origX) + 1}<br>
+                        **Area: ${area}**
+                    `;
+
+                    // Reset selection after a short delay so the user can see the final state
+                    setTimeout(() => {
+                        selectedPointA = null;
+                        selectedPointB = null;
+                        infoDisplay.innerHTML = "Click the first point...";
+                        plotData(null); // Redraw to clear highlights
+                    }, 10000);
+                }
+            }
+
+            plotData(null); // Redraw with new selection highlights
+        }
+
+        /**
+         * Initialisation function.
+         */
+        function init() {
+            canvas = document.getElementById('plotCanvas');
+            ctx = canvas.getContext('2d');
+            infoDisplay = document.getElementById('infoDisplay');
+
+            calculateAndStorePoints();
+
+            // Set initial canvas size based on calculated bounds + margin
+            canvas.width = Math.ceil(width) + 2 * MARGIN;
+            canvas.height = Math.ceil(height) + 2 * MARGIN + 20;
+
+            plotData(null); // Initial draw
+
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseleave', () => plotData(null));
+            canvas.addEventListener('click', handleClick);
+        }
+
+        // Run the initialisation function once the page is fully loaded
+        window.onload = init;
+    </script>
+
+</body>
+</html>
