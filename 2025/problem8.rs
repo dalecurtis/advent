@@ -151,4 +151,14 @@ fn main() {
         junctions.len() - joined + circuits.len(),
         circuits[0].len() * circuits[1].len() * circuits[2].len()
     );
+
+    loop {
+        let edge = min_heap.pop().unwrap();
+        process_edge(&mut circuits, &edge);
+        if circuits[0].len() == junctions.len() {
+            println!("part2 junctions: {:?}", edge);
+            println!("part2 count: {}", edge.a.x * edge.b.x);
+            return;
+        }
+    }
 }
