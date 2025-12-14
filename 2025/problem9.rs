@@ -5,8 +5,6 @@ extern crate itertools;
 use geo::Within;
 use geo_types::{coord, Coord, LineString, Polygon, Rect};
 use itertools::Itertools;
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -15,19 +13,6 @@ struct Edge {
     cost: i64,
     a: Coord<i64>,
     b: Coord<i64>,
-}
-
-impl Ord for Edge {
-    fn cmp(&self, other: &Self) -> Ordering {
-        other.cost.cmp(&self.cost)
-    }
-}
-
-// PartialOrd is required for Ord
-impl PartialOrd for Edge {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(other.cmp(self))
-    }
 }
 
 fn area(a: &Coord<i64>, b: &Coord<i64>) -> i64 {
@@ -68,8 +53,8 @@ fn main() {
     }
     let xmas_blob = Polygon::new(n, vec![]);
 
-    let mut max_heap = BinaryHeap::new();
-    let mut max_heap_contained = BinaryHeap::new();
+    let mut max_total = Edge::default();
+    let mut max_contained = Edge::default();
     for combo in red_tiles.iter().combinations(2) {
         let (p1, p2) = (combo[0].clone(), combo[1].clone());
         let d = area(&p1, &p2);
@@ -77,14 +62,19 @@ fn main() {
             coord! {x: p1.x as f64, y: p1.y as f64},
             coord! {x: p2.x as f64, y: p2.y as f64},
         );
-        let e = Edge {
-            cost: d,
-            a: p1,
-            b: p2,
-        };
-        max_heap.push(e.clone());
-        if r.is_within(&xmas_blob) {
-            max_heap_contained.push(e);
+        if d > max_total.cost {
+            max_total = Edge {
+                cost: d,
+                a: p1,
+                b: p2,
+            };
+        }
+        if d > max_contained.cost && r.is_within(&xmas_blob) {
+            max_contained = Edge {
+                cost: d,
+                a: p1,
+                b: p2,
+            };
         }
     }
 
@@ -96,12 +86,6 @@ fn main() {
         area(&coord! {x: 94699, y: 50401}, &coord! {x: 5106, y: 67466})
     );
 
-    println!("max_heap.len()={}", max_heap.len());
-    println!("max_heap_contained.len()={}", max_heap_contained.len());
-
-    let e1 = max_heap.pop().unwrap();
-    println!("part1={:?}", e1);
-
-    let e2 = max_heap_contained.pop().unwrap();
-    println!("part2={:?}", e2);
+    println!("part1={:?}", max_total);
+    println!("part2={:?}", max_contained);
 }
