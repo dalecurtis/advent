@@ -6,6 +6,8 @@ edition = "2024"
 [dependencies]
 binary-search = "0.1.2"
 geo = "0.32.0"
+good_lp = { version = "*", default-features = false, features = ["microlp"] }
+microlp = "0.2.11"
 ordered-float = "5.1.0"
 pathfinding = "4.11.0"
 rand = "0.8.5"
